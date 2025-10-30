@@ -1,0 +1,35 @@
+import React from "react";
+import { TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+
+export const marketScreenOptions = {
+  title: "Market",
+  headerShown: true,
+  headerStyle: {
+    backgroundColor: "#ffffff",
+    height: 100,
+  },
+  headerTitleStyle: {
+    fontSize: 22,
+    fontWeight: "600" as const,
+    color: "#000000",
+    fontFamily: "PlusJakartaSans_600SemiBold",
+  },
+  headerShadowVisible: false,
+  headerTitle: "",
+  headerLeft: () => (
+    <View className="ml-6">
+      <Ionicons name="trending-up-outline" size={28} color="#000000" />
+    </View>
+  ),
+  headerRight: () => (
+    <View className="flex-row items-center gap-6 mr-6">
+      <TouchableOpacity>
+        <Ionicons name="search-outline" size={24} color="#000000" />
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Ionicons name="filter-outline" size={24} color="#000000" />
+      </TouchableOpacity>
+    </View>
+  ),
+};
