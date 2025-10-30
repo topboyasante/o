@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export const marketScreenOptions = {
@@ -19,7 +19,9 @@ export const marketScreenOptions = {
   headerTitle: "",
   headerLeft: () => (
     <View className="ml-6">
-      <Ionicons name="trending-up-outline" size={28} color="#000000" />
+      <Text style={{ fontFamily: "PlusJakartaSans_600SemiBold", fontSize: 20 }}>
+        Crypto Market
+      </Text>
     </View>
   ),
   headerRight: () => (

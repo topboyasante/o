@@ -1,29 +1,80 @@
-import React, { useState } from "react";
+import PriceChart from "@/components/charts/price-chart";
 import {
+  GetCoin,
+  GetCoinMarketChartData,
+} from "@/services/coingecko/coingecko.service";
+import { Ionicons } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
+import { useLocalSearchParams, useRouter, useNavigation } from "expo-router";
+import React, { useState, useLayoutEffect } from "react";
+import {
+  ActivityIndicator,
   ScrollView,
   Text,
-  View,
-  ActivityIndicator,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useQuery } from "@tanstack/react-query";
-import { GetCoin } from "@/services/coingecko/coingecko.service";
-import { Ionicons } from "@expo/vector-icons";
 
-const TIME_PERIODS = ["24H", "1W", "1M", "1Y", "All"];
+const TIME_PERIODS = ["24H", "1W", "1M", "1Y"] as const;
+type TimePeriod = (typeof TIME_PERIODS)[number];
+
+const DAYS_MAP: Record<TimePeriod, number> = {
+  "24H": 1,
+  "1W": 7,
+  "1M": 30,
+  "1Y": 365,
+};
 
 export default function CoinDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const router = useRouter();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
-  const [selectedPeriod, setSelectedPeriod] = useState("24H");
+  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>("24H");
 
   const { data: coin, isLoading } = useQuery({
     queryKey: ["coin", id],
     queryFn: () => GetCoin(id as string),
     enabled: !!id,
   });
+
+  const { data: chartData, isLoading: isChartLoading } = useQuery({
+    queryKey: ["coin-chart", id, selectedPeriod],
+    queryFn: () =>
+      GetCoinMarketChartData(id as string, DAYS_MAP[selectedPeriod]),
+    enabled: !!id,
+  });
+
+
+  // We use useLayoutEffect to change the layout options of a page, based off some data, etc
+  // here, the header changes based on the selected coin
+  useLayoutEffect(() => {
+    if (coin) {
+      navigation.setOptions({
+        headerLeft: () => (
+          <View className="flex-row items-center gap-3">
+            <TouchableOpacity
+              onPress={() => router.back()}
+              className="w-10 h-10 rounded-full bg-background-secondary border border-border items-center justify-center"
+            >
+              <Ionicons name="arrow-back" size={20} color="#111827" />
+            </TouchableOpacity>
+            <Text style={{ fontFamily: "PlusJakartaSans_600SemiBold", fontSize: 20 }}>
+              {coin.name} ({coin.symbol.toUpperCase()})
+            </Text>
+          </View>
+        ),
+        headerRight: () => (
+          <View>
+            <TouchableOpacity>
+              <Ionicons name="star-outline" size={24} color="#f59e0b" />
+            </TouchableOpacity>
+          </View>
+        ),
+      });
+    }
+  }, [coin, navigation, router]);
 
   if (isLoading || !coin) {
     return (
@@ -40,20 +91,12 @@ export default function CoinDetail() {
   return (
     <ScrollView
       className="flex-1 bg-background-primary"
-      contentContainerStyle={{ paddingBottom: insets.bottom + 100, paddingTop: insets.top + 16 }}
+      contentContainerStyle={{
+        paddingBottom: insets.bottom + 100,
+      }}
     >
-      {/* Header */}
-      <View className="px-4 pb-6">
-        <View className="flex-row items-center justify-between mb-6">
-          <Text className="text-text-primary text-xl font-semibold">
-            {coin.name} ({coin.symbol.toUpperCase()})
-          </Text>
-          <TouchableOpacity>
-            <Ionicons name="star-outline" size={24} color="#f59e0b" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Price */}
+      {/* Price */}
+      <View className="px-4 pt-6 pb-6">
         <Text className="text-text-primary text-4xl font-bold mb-2">
           ${currentPrice.toLocaleString()}
         </Text>
@@ -76,7 +119,9 @@ export default function CoinDetail() {
             key={period}
             onPress={() => setSelectedPeriod(period)}
             className={`px-4 py-2 rounded-lg ${
-              selectedPeriod === period ? "bg-primary-600" : "bg-background-secondary"
+              selectedPeriod === period
+                ? "bg-primary-600"
+                : "bg-background-secondary"
             }`}
           >
             <Text
@@ -90,27 +135,33 @@ export default function CoinDetail() {
         ))}
       </View>
 
-      {/* Chart Placeholder */}
-      <View className="h-64 mx-4 mb-6 bg-background-secondary rounded-2xl items-center justify-center border border-border">
-        <Text className="text-text-tertiary">Chart Coming Soon</Text>
+      {/* Chart */}
+      <View className="p-2">
+        <PriceChart
+          data={chartData?.prices || []}
+          isPositive={isPositive}
+          isLoading={isChartLoading}
+        />
       </View>
 
       {/* Tabs */}
       <View className="flex-row border-b border-border px-4 mb-4">
-        {["Key stats", "Deals", "Order history", "Information"].map((tab, index) => (
-          <TouchableOpacity
-            key={tab}
-            className={`pb-3 mr-6 ${index === 0 ? "border-b-2 border-primary-600" : ""}`}
-          >
-            <Text
-              className={`text-sm font-medium ${
-                index === 0 ? "text-text-primary" : "text-text-secondary"
-              }`}
+        {["Key stats", "Deals", "Order history", "Information"].map(
+          (tab, index) => (
+            <TouchableOpacity
+              key={tab}
+              className={`pb-3 mr-6 ${index === 0 ? "border-b-2 border-primary-600" : ""}`}
             >
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                className={`text-sm font-medium ${
+                  index === 0 ? "text-text-primary" : "text-text-secondary"
+                }`}
+              >
+                {tab}
+              </Text>
+            </TouchableOpacity>
+          )
+        )}
       </View>
 
       {/* Key Stats */}
@@ -130,7 +181,9 @@ export default function CoinDetail() {
               </Text>
             </View>
             <View>
-              <Text className="text-text-secondary text-sm mb-1">Market vol</Text>
+              <Text className="text-text-secondary text-sm mb-1">
+                Market vol
+              </Text>
               <Text className="text-text-primary text-base font-medium">
                 {(coin.market_data.total_volume.usd / 1000000).toFixed(1)}M
               </Text>
@@ -163,7 +216,9 @@ export default function CoinDetail() {
       {/* Action Buttons */}
       <View className="px-4 pt-4 flex-row gap-4">
         <TouchableOpacity className="flex-1 bg-background-secondary py-4 rounded-2xl items-center border border-border">
-          <Text className="text-text-primary text-base font-semibold">Sell</Text>
+          <Text className="text-text-primary text-base font-semibold">
+            Sell
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity className="flex-1 bg-primary-600 py-4 rounded-2xl items-center">
           <Text className="text-white text-base font-semibold">Buy</Text>

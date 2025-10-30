@@ -7,7 +7,18 @@ export default function CoinLayout() {
       <Stack.Screen
         name="[id]"
         options={{
-          headerShown: false,
+          headerShown: true,
+          headerStyle: {
+            backgroundColor: "#ffffff",
+          },
+          headerTitleStyle: {
+            fontSize: 22,
+            fontWeight: "600",
+            color: "#000000",
+            fontFamily: "PlusJakartaSans_600SemiBold",
+          },
+          headerShadowVisible: false,
+          headerTitle: "",
         }}
       />
     </Stack>

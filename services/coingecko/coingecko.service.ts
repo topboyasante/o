@@ -100,9 +100,18 @@ export async function GetCoinHistory(id: string) {
   return response;
 }
 
-export async function GetCoinMarketChartData(id: string) {
+export async function GetCoinMarketChartData(
+  id: string,
+  days: number = 1,
+  vs_currency: string = "usd"
+) {
+  const searchParams = new URLSearchParams({
+    vs_currency,
+    days: days.toString(),
+  });
+
   const request = await fetch(
-    `${process.env.EXPO_PUBLIC_API_URL}/coins/${id}/market_chart`,
+    `${process.env.EXPO_PUBLIC_API_URL}/coins/${id}/market_chart?${searchParams.toString()}`,
     {
       method: "GET",
       headers: {
@@ -112,6 +121,6 @@ export async function GetCoinMarketChartData(id: string) {
     }
   );
 
-  const response: CoinHistoryData = await request.json();
+  const response = await request.json();
   return response;
 }
