@@ -215,13 +215,44 @@ export default function CoinDetail() {
 
       {/* Action Buttons */}
       <View className="px-4 pt-4 flex-row gap-4">
-        <TouchableOpacity className="flex-1 bg-background-secondary py-4 rounded-2xl items-center border border-border">
-          <Text className="text-text-primary text-base font-semibold">
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: "/sell-crypto",
+              params: {
+                coinSymbol: coin.symbol.toUpperCase(),
+                coinPrice: currentPrice.toString(),
+                holdings: "0.5",
+              },
+            })
+          }
+          className="flex-1 bg-background-secondary py-4 rounded-2xl items-center border border-border"
+        >
+          <Text
+            className="text-text-primary text-base font-semibold"
+            style={{ fontFamily: "PlusJakartaSans_600SemiBold" }}
+          >
             Sell
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity className="flex-1 bg-primary-600 py-4 rounded-2xl items-center">
-          <Text className="text-white text-base font-semibold">Buy</Text>
+        <TouchableOpacity
+          onPress={() =>
+            router.push({
+              pathname: "/buy-sell",
+              params: {
+                coinSymbol: coin.symbol.toUpperCase(),
+                coinPrice: currentPrice.toString(),
+              },
+            })
+          }
+          className="flex-1 bg-primary-600 py-4 rounded-2xl items-center"
+        >
+          <Text
+            className="text-white text-base font-semibold"
+            style={{ fontFamily: "PlusJakartaSans_600SemiBold" }}
+          >
+            Buy
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

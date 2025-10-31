@@ -3,6 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 
 export const sellScreenOptions = {
+  title: "Sell Crypto",
   headerShown: true,
   headerStyle: {
     backgroundColor: "#ffffff",

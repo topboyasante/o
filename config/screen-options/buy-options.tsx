@@ -1,7 +1,9 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React from "react";
 
 export const buyScreenOptions = {
+  title: "Buy Crypto",
   headerShown: true,
   headerStyle: {
     backgroundColor: "#ffffff",

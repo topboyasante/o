@@ -5,11 +5,15 @@ import { CartesianChart, Line } from "victory-native";
 interface SparklineChartProps {
   data: number[];
   isPositive: boolean;
+  width?: number;
+  height?: number;
 }
 
 export default function SparklineChart({
   data,
   isPositive,
+  width,
+  height = 40,
 }: SparklineChartProps) {
   const chartData = data.map((value, index) => ({
     x: index,
@@ -21,8 +25,8 @@ export default function SparklineChart({
   return (
     <View
       style={{
-        width: 100,
-        height: 40,
+        width: width || 100,
+        height: height,
       }}
     >
       <CartesianChart
