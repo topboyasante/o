@@ -37,7 +37,6 @@ export default function RootLayout() {
     <QueryClientProvider client={qc}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="coin/[id]" />
       </Stack>
     </QueryClientProvider>
   );

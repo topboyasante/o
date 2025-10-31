@@ -2,10 +2,13 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { Pressable, Text, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useRouter } from "expo-router";
 
 const tabConfig = [
   { name: "index", icon: "wallet" as const },
   { name: "market", icon: "trending-up" as const },
+  { name: "buy", icon: "add-circle" as const },
+  { name: "sell", icon: "remove-circle" as const },
 ];
 
 export default function CustomTabBar({
@@ -13,6 +16,7 @@ export default function CustomTabBar({
   descriptors,
   navigation,
 }: BottomTabBarProps) {
+  const router = useRouter();
   return (
     <View className="absolute bottom-0 left-0 right-0 pb-8 pt-4 px-4">
       <View className="flex-row items-center justify-between">
@@ -63,7 +67,10 @@ export default function CustomTabBar({
         </View>
 
         {/* Right section - Swap button */}
-        <Pressable className="bg-slate-800 rounded-full p-4">
+        <Pressable
+          onPress={() => router.push("/swap")}
+          className="bg-slate-800 rounded-full p-4"
+        >
           <Ionicons name="swap-vertical" size={24} color="#ffffff" />
         </Pressable>
       </View>
