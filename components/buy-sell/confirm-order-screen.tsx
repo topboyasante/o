@@ -46,7 +46,7 @@ export default function ConfirmOrderScreen({
         </View>
 
         {/* Coin Amount Card */}
-        <View className="bg-primary-50 rounded-2xl p-6 items-center mb-6">
+        <View className="rounded-2xl p-6 items-center mb-6">
           <View className="w-16 h-16 bg-orange-500 rounded-full items-center justify-center mb-4">
             <Text className="text-white text-2xl font-bold">₿</Text>
           </View>
@@ -130,7 +130,7 @@ export default function ConfirmOrderScreen({
             )}
           </View>
           <Text className="text-text-secondary text-sm flex-1">
-            I understand that I won't able to withdraw this{"\n"}
+            I understand that I won&apos;t able to withdraw this{"\n"}
             currency for 72 hours
           </Text>
         </TouchableOpacity>
